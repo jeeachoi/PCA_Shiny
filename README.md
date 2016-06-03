@@ -24,7 +24,7 @@ To launch GUI, in R run:
 
 > runGitHub('jeeachoi/PCA_Shiny')
 
-![Screenshot](https://github.com/jeeachoi/PCA_Shiny/blob/master/figs/pcavisual.png)
+![Screenshot](https://github.com/jeeachoi/PCA_Shiny/blob/master/figs/pcavisual2.png)
 
 ## 2. Input files
 
@@ -56,6 +56,7 @@ Example input files for PCA: **PCA_example.csv** and example input files for pro
 - 4. Output file name for percentage of SD explained by each PC (csv)
 - 5. Output file name for gene loading for the top k PCs (csv)
 - 6. Output file name for sorted gene loading for the top k PCs (for each of the top k PCs, genes are sorted by their absolute loadings in each PC)
+- 7. Output file name for input parameters (txt) 
 - If projected PCA is performed, output 4-6 is obtained using the first input file
 
 ## 4. Outputs
@@ -66,7 +67,7 @@ One to three pdf files and three csv files will be generated:
 - Gene_loading.csv: Gene loading for the top k PCs are shown.
 - SortedGene_loadings.csv: For each of the top k PCs, genes are sorted by their absolute loadings in each PC.
 - Variance_explained.csv: Percentage of SD explained by each PC.
-
+- PCA_info.txt: This file contains all input parameters.
 ## Note
 The 'create new folder' button in the output folder selection pop-up is disfunctional right now
 
