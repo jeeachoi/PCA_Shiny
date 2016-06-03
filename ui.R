@@ -86,7 +86,10 @@ shinyUI(pageWithSidebar(
                                 value = "Gene_loadings"),
                       textInput("SortLoadingName", 
                                 label = "Export file name for sorted gene loading for the top k PCs", 
-                                value = "SortedGene_loadings")
+                                value = "SortedGene_loadings"),
+                      textInput("InfoFileName", 
+                                label = "Export file name - input parameters and version info", 
+                                value = "PCA_info")
                ),
 
 			          br(),
