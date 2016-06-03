@@ -48,7 +48,8 @@ shinyServer(function(input, output, session) {
       TrDataPlot = paste0(outdir,input$TrdataplotName,".pdf"),    
       VarExp = paste0(outdir,input$VarExpName,".csv"),    
       Loading = paste0(outdir,input$LoadingName,".csv"),    
-      SortedLoading = paste0(outdir,input$SortLoadingName,".csv")    
+      SortedLoading = paste0(outdir,input$SortLoadingName,".csv"),
+    Info = paste0(outdir,input$InfoFileName,".txt")
     )
 	    
 	Maxbk=apply(Data,1,max)
@@ -171,6 +172,16 @@ shinyServer(function(input, output, session) {
 	write.csv(bkPCAres$rotation[,1:List$Numk], file=List$Loading)
 	write.csv(PCA_sort[,1:List$Numk], file=List$SortedLoading)
 
+	sink(List$Info)
+  print("Input parameters")
+  print(paste0("whether normalize the data? ",List$NormTF ))
+	print(paste0("whether adjust outlier (top/bottom 5%)? ",List$OLTF ))
+	print(paste0("what is the lower limit of detection (max value)? ",List$LODNum ))
+	print(paste0("how many PCs to output? ",List$Numk ))
+	print(paste0("whether perform projected PCA? ",List$ProjTF ))
+	print(paste0("whether plot a biplot? ",List$BiplotTF ))
+	print(paste0("whether plot a scree plot? ",List$ScreeplotTF ))	
+	sink()
 	List=c(List, list(Sig=rownames(Matscale)))  
 	
 })
