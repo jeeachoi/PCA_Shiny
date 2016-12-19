@@ -10,10 +10,13 @@ shinyUI(pageWithSidebar(
   # Sidebar with sliders that demonstrate various available options
   sidebarPanel(width=12,height=20,
                # file
-               fileInput("filename1", label = "File input (support .csv, .txt, .tab). For projected PCA, this file will be used as a reference"),
+               fileInput("filename1", label = "File input (support .csv, .tab). For projected PCA, this file will be used as a reference"),
                
                # grouping vector
-               fileInput("filename2", label = "File input (support .csv, .txt, .tab). For projected PCA, PCs will be generated using the previous file and this data will be projected on."),
+               fileInput("filename2", label = "File input (support .csv, .tab) only needed for projected PCA. For projected PCA, PCs will be generated using the previous file and this data will be projected on"),
+               
+               # grouping vector
+               fileInput("filename3", label = "Condition vector file input (support .csv, .txt, .tab). For PCA plot coloring, condition vector will be used"),
                
                column(4,
 		          # Normalization
@@ -50,17 +53,22 @@ shinyUI(pageWithSidebar(
                                   choices = list("Yes" = 1,
                                                  "No" = 2),
                                   selected = 1),
-                      # For heatmap:
+                      # 
                      radioButtons("screeplot_button",
                                   label = "Do you want to plot a scree plot?",
                                   choices = list("Yes" = 1,
                                                "No" = 2),
                                   selected = 1),
+                     # For color
+                     radioButtons("color_button",
+                                  label = "Colorful PCA plot by condition?",
+                                  choices = list("Yes" = 1,
+                                                 "No" = 2),
+                                  selected = 1),
                      br(),
                      # output dir
                      shinyDirButton('Outdir', 'output folder select', 'Please select a folder'),
-                     br(),
-                     br(),
+                     
                      
                       # plot name
                       textInput("BiplotName", 
