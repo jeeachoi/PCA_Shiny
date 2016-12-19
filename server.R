@@ -11,7 +11,8 @@ shinyServer(function(input, output, session) {
   
   In <- reactive({
     print(input$Outdir)
-    outdir <- paste0("~/",input$Outdir[[1]][[2]],"/")
+    #outdir <- paste0("~", input$Outdir[[1]][[2]], "/")
+    outdir <- paste0("~",do.call("file.path",input$Outdir[[1]]),"/")
     print(outdir)
     
     the.file1 <- input$filename1$name
@@ -27,7 +28,16 @@ shinyServer(function(input, output, session) {
       if(Sep[length(Sep)]=="csv")a2=read.csv(input$filename2$datapath,stringsAsFactors=F,header=TRUE, row.names=1)
       if(Sep[length(Sep)]!="csv")a2=read.table(input$filename2$datapath,stringsAsFactors=F,header=TRUE, row.names=1)
       scData=data.matrix(a2)
-    }
+    }      
+      Group.file <- input$filename3$name
+      if(is.null(Group.file))GroupVIn = list(c1=rep(1,ncol(Data)))
+      if(!is.null(Group.file)){
+        Group.Sep=strsplit(Group.file,split="\\.")[[1]]
+        if(Group.Sep[length(Group.Sep)]=="csv")GroupVIn=read.csv(input$filename3$datapath,stringsAsFactors=F,header=F)
+        if(Group.Sep[length(Group.Sep)]!="csv")GroupVIn=read.table(input$filename3$datapath,stringsAsFactors=F,header=F, sep="\t")
+      }
+      GroupV=GroupVIn[[1]]
+      
     # Compose data frame
     #input$filename$name
     List <- list(
@@ -41,6 +51,7 @@ shinyServer(function(input, output, session) {
 	  ProjTF = ifelse(input$proj_button=="1",TRUE,FALSE),
       BiplotTF=ifelse(input$biplot_button=="1",TRUE,FALSE), 
       ScreeplotTF=ifelse(input$screeplot_button=="1",TRUE,FALSE), 
+	    ColplotTF=ifelse(input$color_button=="1",TRUE,FALSE), 
    	  Dir=outdir, 
 	  BiPlot = paste0(outdir, input$BiplotName,".pdf"),
       ScreePlot = paste0(outdir,input$ScreeplotName,".pdf"),
@@ -51,8 +62,13 @@ shinyServer(function(input, output, session) {
       SortedLoading = paste0(outdir,input$SortLoadingName,".csv"),
     Info = paste0(outdir,input$InfoFileName,".txt")
     )
-	    
-	Maxbk=apply(Data,1,max)
+	if(List$ProjTF==FALSE){
+	  if(length(GroupV)!=ncol(Data)) stop("Length of the condition vector is not the same as the number of samples!")
+	}  
+  if(List$ProjTF==TRUE&List$ColplotTF==TRUE){
+      if(length(GroupV)!=ncol(scData)) stop("Length of the condition vector is not the same as the number of samples!")
+  }  
+  Maxbk=apply(Data,1,max)
 	WhichbkRM=which(Maxbk<List$LODNum)
     print(paste(length(WhichbkRM),"File1: genes with max expression < ", List$LODNum, "are removed"))
 	Matbk=Data
@@ -157,7 +173,9 @@ shinyServer(function(input, output, session) {
     }
 	
 	pdf(List$TrDataPlot, height=10,width=10)
-	pairs(PCAres$x[,1:List$Numk])
+	pairs(PCAres$x[,1:List$Numk],col=as.factor(GroupV))
+	plot(PCAres$x[,1],PCAres$x[,2],col=as.factor(GroupV),cex=2,pch=16,xlab="PC1",ylab="PC2",cex.lab=1.5)
+	text(PCAres$x[,1], PCAres$x[,2], labels=as.character(GroupV), cex=1.5, pos=3)
 	dev.off()
 	
 	Perc=bkPCAres$sdev/sum(bkPCAres$sdev)
